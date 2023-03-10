@@ -1,4 +1,4 @@
-# @ready's StyleFlowy
+# @ready's StyleFlowy for Workflowy
 
 Welcome to Ready's respository of Worfklowy Styles. I love Workflowy. It's replaced every other app I use. A large reason behind that is how fast, powerful, simple, and (now) attractive it is to use. Hopefully you enjoy these customizations. Admittedly I don't really fully understand Github, but figured this was the best place to drop this. 🤷‍♂️
 
