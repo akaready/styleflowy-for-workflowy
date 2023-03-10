@@ -1,0 +1,892 @@
+/* 
+--------------------------------------------------------------------------------------------------------------------------
+
+@ready's StyleFlowy for Workflowy — v28
+Last Updated: Mar 10, 2023 at 10:20 AM
+
+It was a lot of work digging up these classes, getting thigs right, testing, building variables, and adding comments to make things easy to follow.
+If you like it, use it, or fork it, please consider buying me a coffee! ☕ 🤗
+
+No support is generally offered, but if you find me on the Workflowy Slack User Group I'd probably try and answer a quick question.
+
+Tested with: macOS Monteray and Ventura running Workflowy as a Brave Shortcut, and iOS 16 on the native Workflowy App.
+
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+IMPORTS
+Imports IBM Plex Mono, preferred font choice for Workflowy.
+Generally best to include this at the very top.
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+VARIABLES
+Changes the colors of these variables to change the colors.
+Much easier than hunting the colors down elsewhere in the code. :)
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+:root {
+
+--todoText: white; /* MATCHES DEFAULT TEXT COLOR */
+--todoBullet: hsla(1, 1%, 1%, 0); /* REMOVES THE BULLET CIRCLE FOR TODOS */
+--todoBulletBorder: hsla(179, 3%, 85%, 1.00); /* MATCHES DEFAULT BULLET CIRCLE */
+
+--todoDoneBulletOutline: hsla(0, 0%, 52%, 1.00);
+--todoDoneBulletBG: hsla(201, 13%, 24%, 1.00);
+--todoDoneBulletChildrenBG: hsla(0, 0%, 35%, 1.00);
+
+--doneTextFilter: brightness(60%); /* LOWER NUMBERS = DARKER */
+--doneBulletFilter: brightness(70%); /* LOWER NUMBERS = DARKER */
+
+--mirroredText: hsla(193, 100%, 88%, 1.00);
+--mirroredBullet: hsla(193, 85%, 70%, 1.00);
+--mirroredBulletBorder: hsla(193, 100%, 88%, 1.00);
+--mirroredBulletBG: hsla(211, 45%, 35%, 1.00);
+--mirroredBulletBGhover: hsla(211, 45%, 55%, 1.00);
+
+--sharedText: hsla(259, 60%, 85%, 1.00);
+--sharedLink: hsla(259, 100%, 80%, 1.00);
+--sharedBullet: hsla(259, 60%, 85%, 1.00);
+--sharedBulletBorder: hsla(259, 65%, 85%, 1);
+--sharedBulletBG: hsla(259, 60%, 55%, 1.00);
+--sharedBulletBGhover: hsla(259, 65%, 65%, 1.00);
+
+--referencesBullet: hsla(190, 2%, 49%, 1.00);
+--notesText: rgb(118, 121, 122);
+--externalLinkText:  hsla(259, 85%, 78%, 1.00);
+--internalLinkText: hsla(193, 85%, 61%, 1.00);
+--internalLinkTextBG: hsla(211, 35%, 23%, 1.00);
+--internalLinkBGhover: hsla(211, 55%, 30%, 1.00);
+
+--highlighterColoredTextBG: hsla(201, 13%, 14%, 1.00);
+
+--referencesBG: hsla(201, 13%, 15%, 1.00);
+--referencesMobileBG: hsla(201, 13%, 11%, 1.00);
+
+--searchUnderline: yellow;
+--searchBG: rgba(0,0,0,0);
+
+--tagDefaultText: hsla(360,100%,100%,.75);
+--tagDefaultBG: hsla(204, 7%, 28%, 1.00);
+
+}
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+INTERFACE TWEAKS
+Various tweaks to the main interface.
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+
+/* CHANGE MOST FONTS */
+.dialog-box, .breadcrumbs, .content, .MobileBreadcrumbs {
+font-family: 'IBM Plex Mono', monospace !important;
+}
+
+/* HIDE "BOARDS" FROM THE FLYOUT SLASH COMMAND */
+.flyout.menu > .menuItem:nth-of-type(1):has([data-icon='table-columns']) {
+display: none;
+}
+
+/* ALIGNS CHILDREN TEXT DIRECTLY A COLORED EMOJI TAG LIKE #👤 */
+.children {
+left: -3px;
+}
+
+/* MAKES PARAGRAPH STYLING MATCH BULLET SPACING SO THE TOGGLE ONLY REMOVES THE BULLET AND DOES NOT ADJUST OTHER SPACING */ 
+.paragraph, .paragraph .content {
+margin-top: 0px !important;
+margin-bottom: 0px !important;
+line-height: 19px !important;
+}
+
+/* REPLACE UNDERLINES WITH BORDERS TO LOWER THE LINE BY A COUPLE PIXELS AND NOT TOUCH THE COMMAS, ETC. */
+u, time {
+text-decoration: none !important;
+border-bottom: .5px solid currentcolor !important;
+}
+
+/* ADD ADDITIONAL SPACE BETWEEN BULLET AND CONTENT */
+.innerContentContainer { 
+margin-left: 2px !important; 
+}
+
+/* RECOLORS NOTES */
+.notes  span {
+color: var(--notesText);
+}
+
+/* CLEAN UP THE HEADER BY HIDING BUTTONS... 
+Remove or comment off the items below to toggle on/off.
+---
+"nth-of-type(1)" = SIDEBAR SHOW/HIDE BUTTON
+"nth-of-type(2)" = BACK BUTTON
+"nth-of-type(3)" = FORWARD BUTTON
+"user-plus" = SHARE BUTTOTN
+"star" = STAR BUTTON
+"check" = SHOW/HIDE DONE BUTTON
+"list-ul" = CHANGE LAYOUT BUTTON */
+
+.header > div:nth-of-type(1),
+.header > div:nth-of-type(2),
+.header > div:nth-of-type(3),
+.header > div:has([data-icon="user-plus"]),
+.header > div:has([data-icon="star"]),
+.header > div:has([data-icon="check"]),
+.header > div:has([data-icon="list-ul"])
+{
+display: none;
+}
+
+/* MAKE FLOATING (...) APPEAR ONLY ONCE HOVERED OVER */
+.itemMenu svg:hover {
+fill: hsla(201, 3%, 37%, 1.00);
+}
+
+/* HIDE FLOATING (...) THE REST OF THE TIME */
+.itemMenu svg {
+fill: hsla(0,0%,0%,0);
+}
+
+/* EXPAND/COLLAPSE ARROWS RE-COLORING ON HOVER */
+.name:hover > .expand {
+color:hsla(201, 3%, 57%, 1) !important;
+}
+
+/* REPLACES SEARCH BAR SEPERATOR WITH A LINE THAT FADES OUT */
+.header {
+border-image: linear-gradient(to right, rgb(66,72,75), 40%, rgba(66,72,75,0) 65%) 1;
+}
+
+/* ADDS SLIGHT SHADOW TO SEARCH BOX */
+.flyout.menu {
+box-shadow: 5px 5px 20px hsla(201, 13%, 15%, .75);
+}
+
+/* DARKENS THE BREADCRUMBS A BIT */
+.breadcrumbs {
+filter: brightness(.8);
+}
+
+/* MAKES THE LAST BREADCRUMB LINK BRIGHTER */
+.breadcrumbs a:last-of-type {
+color: white !important;
+}
+
+/* FORCE CONTENT TO 300 WEIGHT FOR BETTER FONT RENDERING */
+.content {
+font-weight: 300;
+}
+
+/* MAKE BOLD LESS BOLD */
+b {
+font-weight: 500 !important;
+}
+
+/* ADDS SPACING TO TITLES OF NODES */
+.project.root > .name > .content{
+padding-top: 4px;
+line-height: 40px !important;
+}
+
+/* EXPAND/COLLAPSE ARROW RE-COLORING + SLIGHT ADJUSTMENT */
+.expand, .checkmark .expand {
+color:hsla(201, 3%, 37%, .5) !important;
+top: 5px;
+}
+
+/* LESS INVASIVE PRIVATE MIRROR WARNING + #MOBILE */
+div:has( > [data-icon="triangle-exclamation"]) {
+border-radius: 4px;
+color: hsla(0, 70%, 70%, 1.00);
+background-color: hsla(0, 15%, 20%, 1.00);
+border: 1px solid hsla(0, 25%, 40%, 1.00);
+margin-left: px;
+margin-top: 3px;
+}
+div:has( > [data-icon="triangle-exclamation"]) a {
+visibility: hidden;
+position: absolute;
+}
+div:has( > [data-icon="triangle-exclamation"]) a:before {
+content:"Private Mirror" !important;
+visibility: visible;
+background-color: hsla(0, 15%, 20%, 1.00);
+border: 1px solid hsla(0, 25%, 40%, 1.00);
+border-left: 0px;
+border-top-left-radius: 0px !important;
+border-bottom-left-radius: 0px !important;
+border-radius: 5px;
+padding: 3px 7px 4px 7px;
+margin-left: -7px;
+padding-left: 7px;
+/* font-family: 'IBM Plex Mono', monospace !important; */
+}
+.newMobileDesign div:has( > [data-icon="triangle-exclamation"]) a:before {
+padding: 10px 7px;
+}
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+TODO + MIRRORED + SHARED BULLET + TEXT  RESTYLING
+Changes both the bullets and the node text.
+Leans into blue shades for internal mirrored nodes.
+Leans into purple shades for external shared nodes.
+Restyles todo's to be empty circles or diamonds.
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* ADJUST REGULAR BULLET POSITION FOR MOBILE */
+.newMobileDesign .bullet {
+top: 4.5px !important;
+}
+
+/* DEFAULT CHECKBOX HIDING */
+.item-checkbox {
+display: none;
+}
+
+/* TODO TEXT */
+.project.checkmark .content {
+color: var(--todoText);
+}
+
+/* TODO BULLETS COLOR (OUTLINE CIRCLE SHAPE) + #MOBILE */
+.project.checkmark > .name > .bullet {
+border-style: solid;
+border-width: 1px;
+border-color: var(--todoBulletBorder);
+border-radius: 50%;
+color: var(--todoBullet) !important;
+width: 14px;
+height: 14px;
+top: 7px;
+left: 502px;
+}
+
+.newMobileDesign .project.checkmark > .name > .bullet,
+.newMobileDesign .done.checkmark > .name > .bullet {
+width: 18px;
+height: 18px;
+top: 7px !important;
+left: 1px;
+}
+
+/* TODO + MIRROR BULLETS (DIAMOND SHAPE), SHARED + TODO + MIRROR BULLETS (DIAMOND SHAPE) + #MOBILE */
+.project.checkmark .bullet.diamond, .shared.checkmark > .name > .bullet.diamond {
+-ms-transform: rotate(45deg) !important; /* IE 9 */
+-webkit-transform: rotate(45deg) !important; /* Chrome, Safari, Opera */
+transform: rotate(45deg) !important;
+border-radius: 15%;
+width: 11px;
+height: 11px;
+top: 7px;
+left: 504px;
+}
+div[projectid^="virtual_"].checkmark > .name > .bullet circle, .checkmark .mirrorDiamondIcon {
+opacity: 0;
+}
+
+.newMobileDesign .project.checkmark .bullet.diamond,
+.newMobileDesign .shared.checkmark > .name > .bullet.diamond {
+transform: rotate(45deg) !important;
+width: 14px;
+height: 14px;
+top: 9px !important;
+left: 3.5px;
+}
+
+/* MIRRORED TEXT COLOR */
+.diamond ~ div[class^=content] > .innerContentContainer,
+div[projectid^="virtual_"] > .name > .content > .innerContentContainer,
+.hasMirrors .innerContentContainer {
+color: var(--mirroredText);
+}
+
+/* MIRRORED BULLETS COLOR */
+.diamond.bullet,
+div[projectid^="virtual_"] .bullet,
+.hasMirrors .bullet
+.diamond.bullet path,
+div[projectid^="virtual_"] .bullet path,
+.hasMirrors .bullet path,
+.diamond.bullet circle,
+div[projectid^="virtual_"] .bullet circle,
+.hasMirrors .bullet circle,
+.mirrorDiamondIcon
+{
+color: var(--mirroredBullet);
+border-color: var(--mirroredBulletBorder) !important;
+opacity: 1;
+}
+
+/* MIRRORED BULLETS WITH CHILDREN COLOR */
+.collapsed .diamond.bullet,
+div[projectid^="virtual_"].collapsed .bullet,
+.hasMirrors .collapsed .bullet
+{
+background-color: var(--mirroredBulletBG);
+}
+
+/* MIRRORED BULLETS WITH CHILDREN HOVER COLOR */
+.diamond.bullet:hover,
+div[projectid^="virtual_"] .bullet:hover,
+.hasMirrors .bullet:hover {
+background-color: var(--mirroredBulletBGhover);
+}
+
+/* SHARED BULLETS COLOR */
+/* .isShared CONTROLS NESTED PAGES OF SHARED ITEMS */
+.shared .bullet,
+.shared .innerContentContainer,
+.shared .checkmark .bullet,
+.shared .collapsed .bullet circle,
+.shared .references .bullet circle,
+.shared .references .bullet path,
+.isShared .bullet, 
+.isShared .innerContentContainer,
+.isShared .checkmark .bullet,
+.isShared .collapsed .bullet circle,
+.isShared .references .bullet circle,
+.isShared .references .bullet path 
+{
+background-color: rgba(0,0,0,0%);
+border-color: var(--sharedBulletBorder) !important;
+color: var(--sharedBullet) !important;
+opacity: 1;
+}
+
+/* SHARED BULLETS WITH CHILDREN COLOR */
+.shared.collapsed .bullet,
+.shared.checkmark .collapsed .bullet,
+.shared .collapsed .bullet, .shared .references .collapsed .bullet,
+.isShared .collapsed .bullet {
+background-color: var(--sharedBulletBG) !important;
+}
+.shared.open .bullet {
+background-color: rgba(0,0,0,0%);
+}
+
+/* SHARED BULLETS HOVER COLOR */
+.shared .bullet:hover,
+.isShared .bullet:hover {
+background-color: var(--sharedBulletBGhover) !important;
+}
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+COMPLETED NODE STYLING
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* COMPLETED TO-DO NODES PREP */
+.done.checkmark > .name > .bullet {
+-ms-transform: rotate(45deg) !important; /* IE 9 */
+-webkit-transform: rotate(45deg) !important; /* Chrome, Safari, Opera */
+transform: rotate(45deg) !important;
+}
+
+/* COMPLETED TO-DO NODES CHECKBOX BUILD + COLOR #MOBILE */
+.done.checkmark > .name > .bullet:before{
+content:"";
+position: absolute;
+width:2px;
+height:10px;
+left:7px;
+top:0px;
+}
+
+.done.checkmark > .name > .bullet:after{
+content:"";
+position: absolute;
+width:5px;
+height:2px;
+left:4px;
+top:9px;
+}
+
+.newMobileDesign .done.checkmark > .name > .bullet:before{
+content:"";
+position: absolute;
+width:3px;
+height:12px;
+left:10px;
+top:0px;
+}
+
+.newMobileDesign .done.checkmark > .name > .bullet:after{
+content:"";
+position: absolute;
+width:7px;
+height:3px;
+left:6px;
+top:11px;
+}
+
+/* COMPLETED MIRRORED TO-DO NODES CHECKBOX BUILD + COLOR #MOBILE */
+.done.checkmark > .name > .diamond:before {
+content:"";
+position: absolute;
+width:2px;
+height:8px;
+left:6px;
+top:0px;
+}
+
+.done.checkmark > .name > .diamond:after {
+content:"";
+position: absolute;
+width:5px;
+height:2px;
+left:3px;
+top:6px;
+}
+
+.newMobileDesign .done.checkmark > .name > .diamond:after {
+transform: rotate(90deg) !important;
+width:11px;
+height:3px;
+left:4.5px;
+top:3px;
+}
+
+.newMobileDesign .done.checkmark > .name > .diamond:before {
+transform: rotate(90deg) !important;
+width:3px;
+height:8px;
+left:6px;
+top:6px;
+}
+
+
+/* COMPLETED TO-DO NODES CHECKBOX COLOR */
+.done.checkmark > .name > .bullet:before, .done.checkmark > .name > .bullet:after {
+background-color: var(--todoBulletBorder);
+}
+
+/* COMPLETED MIRROR NODES CHECKBOX COLOR */
+.diamond.bullet:before,
+div[projectid^="virtual_"] .bullet:before,
+.hasMirrors .bullet:before,
+.diamond.bullet:after,
+div[projectid^="virtual_"] .bullet:after,
+.hasMirrors .bullet:after {
+background-color: var(--mirroredBulletBorder) !important;
+}
+
+/* COMPLETED TODO SHARED BULLETS OF ANY KIND */
+.shared .bullet:before, .shared .bullet:after {
+background-color: var(--sharedBulletBorder) !important;
+}
+
+/* COMPLETED NODES TEXT STRIKEOUT REMOVAL + COLORING */
+.done .content {
+filter: var(--doneTextFilter);
+text-decoration: none !important;
+color: white !important;
+}
+
+/* COMPLETED NODES BULLET DARKENING (MAINTAINS OTHER STYLES) */
+.done .bullet  {
+filter: var(--doneBulletFilter);
+}
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+INTERNAL LINKS
+Styles links that point to within Workflowy differently than external links.
+Specifically, leans into the Slack style of blue on blue.
+Uses blue shades to enforce mirrors as a conceptual linking within WF.
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* RECOLORING TO SLACK STYLE BLUE ON BLUE */
+.contentLink[href^="https://beta.workflowy.com"], .contentLink[href^="https://workflowy.com"] {
+text-decoration: none !important;
+color: var(--internalLinkText) !important;
+background: var(--internalLinkTextBG);
+padding: 0px 2px !important;
+margin: 0px -2px !important;
+border-radius: 4px !important;
+border-bottom-width: 0px;
+}
+
+/* BRIGHTER BLUE ON HOVER */
+.contentLink[href^="https://beta.workflowy.com"]:hover, .contentLink[href^="https://workflowy.com"]:hover {
+transition: 200ms ease-in-out !important;
+text-decoration: none !important;
+color: #FFFFFF !important;
+background-color: var(--internalLinkBGhover) !important;
+cursor: cell; 
+}
+
+.contentLink[href^="https://beta.workflowy.com"]:after, .contentLink[href^="https://workflowy.com"]:after {
+content:"" !important;
+}
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+EXTERNAL LINKS
+Styles links that point away from Workflowy, to external sites, differently.
+Uses purple shades to enforce shared bullets as a conceptual linking outside WF.
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* RECOLORING LINK TEXT */
+.contentLink {
+/* color: inherit !important; */
+color: var(--sharedLink) !important;
+text-decoration: none !important;
+border-bottom-width: .5px;
+border-bottom-style: solid;
+border-bottom-color: inherit;
+}
+
+/* FADE IN AN UNDERLINE ON HOVER */
+.contentLink:hover {
+transition: 200ms ease-in-out !important;
+border-bottom-color: hsla(0, 0%, 0%, 0) !important;
+cursor: ne-resize;
+}
+
+/* .contentLink:after { 
+content: " 🔗";
+} */
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+SEARCH RESULT MATCHES STYLING
+Changes the style of search results to stand out more.
+Removes default blue background color.
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* STYLES MATCHES WITH ROUNDED YELLOW OUTLINE AND HIDES BLUE HIGHLIGHT */
+.fullMatch .contentMatch {
+border: solid var(--searchUnderline) 2px;
+border-radius: 4px; 
+background-color: hsla(201, 13%, 9%, 0) !important;
+padding: 0px 2px;
+}
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+BACKLINK "REFERENCE AREA"
+Adds background color and additional spacing to all backlink reference areas.
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+.project.references {
+background: var(--referencesBG);
+border: 1px solid hsla(203, 5%, 28%, 1.00);
+margin: 5px 0px;
+margin-left: -26px;
+padding-left: 26px;
+padding-right: 20px;
+padding-top: 5px;
+padding-bottom: 8px;
+border-top-right-radius: 10px;
+border-bottom-right-radius: 10px;
+border-top-left-radius: 0px;
+border-bottom-left-radius: 0px;
+}
+
+.project.references > .name > .bullet, .project.references > .name > .bullet svg {
+color: var(--referencesBullet) !important;
+opacity: 1;
+}
+
+.project.references.root > .name > .content {
+margin-top: 10px;
+}
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+TAG STYLING
+Adds more padding and spacing to the tags.
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+
+/* BASIC TAG STYLES, ADDS GREY BACKGROUND AND ROUNDED EDGES */
+.contentTag {
+text-decoration: none !important;
+padding: 0px 3px !important;
+margin: 0px -2px !important;
+border-radius: 4px !important;
+background-color: hsla(200, 7%, 25%, 1.00);
+color:hsla(200, 7%, 80%, 1.00) !important;
+}
+
+.contentTag:hover {
+filter: brightness(125%) !important;
+transition: 200ms ease-in-out;
+cursor: alias; 
+}
+
+.contentTagText {
+text-decoration: none !important;
+}
+
+/* HIDE #COPY AND #TEMPLATE TAGS */
+.contentTag[data-val="#copy"], .contentTag[data-val="#template"] {
+display: none;
+opacity: 0;
+}
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+SPECIAL TAGS
+Use this area to default specific tags to certain styles.
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* MAKES ANY TAG STARTING WITH #C- COLOR CODED AS CODE IN YELLOW */
+.innerContentContainer:has([data-val^="#c-"]) {
+background-color: hsla(201, 13%, 14%, 1.00);
+padding: 0px 0px 0px 3px !important;
+margin: 0px 0px 0px -3px !important;
+border-radius: 4px !important;
+color: rgb(227, 160, 8) !important;
+}
+
+.contentTag[data-val^="#c-"] {
+background-color: hsla(38, 28%, 42%, 1.00) !important;
+}
+
+/* TYPE #--- TAG AND GENERATOR A LIGHT SEPERATOR */
+.innerContentContainer:has([data-val^="#---"]) {
+opacity: .1;
+}
+
+.innerContentContainer:has([data-val^="#---"]):after {
+content:"———————————";
+}
+
+.name:has([data-val^="#---"]) .bullet, .contentTag[data-val^="#---"] {
+display: none;
+}
+
+.name:has([data-val^="#---"]) .content {
+top: -6;
+}
+
+/* VIA @CRISTHIAN AQUILES ON SLACK: https://workflowyusergroup.slack.com/archives/C3Q6EV3CH/p1677776350160919?thread_ts=1677772038.420489&cid=C3Q6EV3CH */
+.project:has( > .name > .content > .innerContentContainer .contentTag[title="Filter #flat"])  > .children > .project .children {
+display: table-row;
+background: hsla(201, 13%, 39%, 1.00);
+border-radius: 4px !important;
+}
+
+/* VIA @CRISTHIAN AQUILES ON SLACK: https://workflowyusergroup.slack.com/archives/C3Q6EV3CH/p1677776350160919?thread_ts=1677772038.420489&cid=C3Q6EV3CH */
+/*Applies flat view if #flat is in notes*/
+.project:has( >  .notes > .content > .innerContentContainer > .contentTag[title="Filter #flat"])  > .children > .project .children {
+display: table-row;
+background: hsla(201, 13%, 39%, 1.00);
+border-radius: 4px !important;
+}
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+HIGHLIGHTER STYLING
+Changes how the highlighter function works.
+Adds dark background for items that are colored.
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* MORE PADDING + ROUNDED CORNERS FOR ALL HIGHLIGHT COLORS */
+.bc-red, .bc-orange, .bc-yellow, .bc-green, .bc-teal, .bc-sky, .bc-blue, .bc-purple, .bc-pink, .bc-gray {
+padding: 0px 3px !important;
+margin: 0px -3px !important;
+border-radius: 4px !important;
+}
+
+/* TEXT COLOR RESTYLING, ADDS DARK GRAY BG */
+.c-red, .c-orange, .c-yellow, .c-green, .c-teal, .c-sky, .c-blue, .c-purple, .c-pink, .c-gray {
+background-color: var(--highlighterColoredTextBG) !important;
+padding: 0px 3px !important;
+margin: 0px -3px !important;
+border-radius: 4px !important;
+}
+
+/* FOR THE GRAY ONE, MAKES THE TEXT WHITE FOR LEGIBILITY */
+.c-gray {
+color: #FFFFFF !important;
+}
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+MOBILE CONTROLS
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* HIDES NOT USEFUL CONTROLS ON MOBILE TO AVOID SCROLLING THE LITTLE MENU */
+.mobileControls > ._1399bi5:has([data-icon="check"]),
+.mobileControls > ._1399bi5:has([data-icon="pencil"]),
+.mobileControls > ._1399bi5:has([data-icon="bold"]),
+.mobileControls > ._1399bi5:has([data-icon="italic"]),
+.mobileControls > ._1399bi5:has([data-icon="underline"]),
+.mobileControls > ._1399bi5:has([data-icon="at"]),
+.mobileControls > ._1399bi5:has([data-icon="calendar-days"]),
+.mobileControls > ._1399bi5:has([data-icon="font"]),
+.mobileControls > ._1399bi5:has([data-icon="chevron-down"]) {
+display: none;
+}
+
+/* RETURNS THE KEYBOARD DOWN ICON FOR USE */
+.mobileControls > ._1399bi5:has([data-icon="keyboard"]) {
+display: inherit !important;
+color: white !important;
+z-index: 100;
+}
+
+/* MAKES CONTROLS BG SAME AS iOS KEYBOARD BG */
+.mobileControls {
+background-color: hsla(0, 0%, 17%, 1.00);
+}
+
+/* REMOVE BOX OUTLINES BETWEEN TOOL ICONS */
+.mobileControls > * {
+border: 0px !important;
+outline: 0px !important;
+}
+
+/* ADD 1PX BORDER THAT MATCHES iOS KEYBOARD SEPERATOR */
+.mobileControls {
+border-top: 1px solid hsla(0, 0%, 25%, 1.00) !important;
+border-bottom: 1px solid hsla(0, 0%, 25%, 1.00) !important;
+outline: 0px !important;
+}
+
+/* PROPER COLOR TO MATCH IOS KEYBOARD FOR # SEPERATORS */
+.mobileControls > div > div > div {
+border-right: 1px solid hsla(0, 0%, 25%, 1.00) !important;
+}
+
+/* MAKES THE "X" TO CLOSE OUT THE # LIST BRIGHTER */
+.mobileControls > div > div > svg {
+stroke: white !important;
+}
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+MOBILE SEARCH BAR + BREADCRUMBS
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* MAKE SEARCH BAR ATTRACTIVE */
+.newMobileDesign .newMobileSearchBox {
+background-color: hsla(201, 13%, 14%, 1);
+border: 1px hsla(197, 8%, 28%, 1.00) solid;
+margin-left: 10px;
+font-family: "IBM Plex Mono", monospace;
+}
+
+/* REMOVE SEPARATION BETWEEN SEARCH BAR AND BREADCRUMBS, ADD BOTTOM SEPERATOR THAT MATCHES THE ONE AT THE BOTTOM */
+.MobileBreadcrumbs {
+margin-top: -1px;
+border-bottom: 1px hsla(200, 7%, 28%, 1.00) solid;
+}
+
+/* RESTYLE BREADCRUMBS TO NOT BE ITALICIZED */
+.MobileBreadcrumbs span {
+text-decoration: none !important;
+font-style: normal !important;
+font-weight: 300 !important;
+}
+
+/* MAKES THE ACTIVE NODE IN BREADCRUMBS WHITE */
+.MobileBreadcrumbs > div > span:last-of-type {
+color: white;
+}
+
+
+/*
+--------------------------------------------------------------------------------------------------------------------------
+MOBILE TWEAKS
+--------------------------------------------------------------------------------------------------------------------------
+*/
+
+/* HIDES STAR ICON ON MOBILE */
+.MobileBreadcrumbs > div:nth-of-type(4) {
+display: none;
+}
+
+/* ADD LINE SPACING BETWEEN NODES TO PREVENT OVERLAP */
+.newMobileDesign .content, .newMobileDesign .children {
+min-height: 26px;
+line-height: 26px;
+}
+
+/* DARKEN THE BACKGROUND FOR MORE CONTRAST */
+.newMobileDesign .page {
+background-color: hsla(201, 13%, 14%, 1.00) !important;
+}
+
+/* PUSH TITLE LOWER COMPARED TO BREADCRUMBS */
+.newMobileDesign .mainTreeRoot {
+margin-top: 20px !important;
+}
+
+/* REPOSITION THE EXPAND ARROWS ON MOBILE TO NOT OVERLAP WITH THE BACKLINKS OUTLINE, AND ALSO REALIGN TO CENTER AND PUSH AWAY FROM EDGE */
+.newMobileDesign .expand {
+margin-right: 16px;
+margin-top: 2px;
+}
+
+/* ADJUST GAP FROM BREADCRUMBS TO CONTENT */
+.newMobileDesign .mainTreeRoot > .name > .content {
+margin-top: -50px !important;
+}
+
+/* RESTYLE HEADER NODE */
+.newMobileDesign .root > .name > .content {
+margin-top: 20px;
+font-size: 26px;
+font-weight: 400;
+}
+
+/* STYLIZE BACKLINS AREA TO MATCH DESKTOP */
+.newMobileDesign .references {
+background-color: var(--referencesMobileBG);
+border-top-right-radius: 10px;
+border-bottom-right-radius: 10px;
+padding: 10px 10px 10px 15px;
+margin: 10px -11px 5px -2px !important;
+}
+
+/* SIZE CLIPPING FIX */
+.newMobileDesign .content {
+max-width: calc(94%) !important;
+}
+
+/* ADDS SEXY SHADOW TO TOP/BOTTOM CONTROLS TO AGAIN MAKE THE CONTENT POP */
+.MobileBreadcrumbs {
+box-shadow: 0px 10px 25px hsla(200, 13%, 10%, 1.00);
+}
+.hideForSheetView, .mobileControls {
+box-shadow: 0px -10px 25px hsla(200, 13%, 10%, 1.00);
+}
