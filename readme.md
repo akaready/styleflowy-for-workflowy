@@ -18,9 +18,8 @@ The wonderful part about Jay's extension is that it works on mobile. You'll find
 
 Here's a preview of what the styles will change! 
 
-![styles_preview-v01-RDY](https://user-images.githubusercontent.com/127541578/224455895-5c658f3e-2bf6-4958-903b-cb4977713b90.jpg)
+![styleflowy_demo-v01-RDY](https://user-images.githubusercontent.com/127541578/224458486-ec8ffc25-aba9-4033-811f-6f0743499fcc.jpg)
 
- 
 ## Buy Me a Coffee ☕
 
 It was definitely a lot of work to dig up the classes, get thigs right, test, build variables, and add the comments in to make things easy to follow. If you like it, use it, or wanna fork it, please consider buying me a coffee! 🤗
