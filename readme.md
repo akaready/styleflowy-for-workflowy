@@ -18,7 +18,7 @@ The wonderful part about Jay's extension is that it works on mobile. You'll find
 
 Here's a preview of what the styles will change! 
 
-![styleflowy_demo-v01-RDY](https://user-images.githubusercontent.com/127541578/224458537-5cf64be8-27ef-43bb-bf48-e4d6562ceb48.png)
+![styleflowy_demo-v02-RDY](https://user-images.githubusercontent.com/127541578/224458714-fb6284f7-92d0-497b-8955-0a1b91296a4e.png)
 
 
 ## Buy Me a Coffee ☕
