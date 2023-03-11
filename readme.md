@@ -2,7 +2,7 @@
 
 Welcome to my lil' Github Repo for StyleFlowy. I love Workflowy. It's slowly replaced every other app I use over the past decade. A large reason behind that is how fast, powerful, simple, and (now) attractive it is to use. Hopefully you enjoy these added CSS customizations. Admittedly, I don't really fully understand Github, but figured this was the best place to drop this for folks to keep track of. 🤗
 
-
+https://github.com/akaready/styleflowy-for-![styles_preview-v01-RDY](https://user-images.githubusercontent.com/127541578/224455865-9ea43606-83a7-4977-b8d0-21f0057cb6ee.jpg)
 
 ## Recommeded Usage 📝
 
