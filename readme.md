@@ -2,8 +2,6 @@
 
 Welcome to my lil' Github Repo for StyleFlowy. I love Workflowy. It's slowly replaced every other app I use over the past decade. A large reason behind that is how fast, powerful, simple, and (now) attractive it is to use. Hopefully you enjoy these added CSS customizations. Admittedly, I don't really fully understand Github, but figured this was the best place to drop this for folks to keep track of. 🤗
 
-https://github.com/akaready/styleflowy-for-![styles_preview-v01-RDY](https://user-images.githubusercontent.com/127541578/224455865-9ea43606-83a7-4977-b8d0-21f0057cb6ee.jpg)
-
 ## Recommeded Usage 📝
 
 I highly recommend using Jay (the artist formerly known as rawbtz)'s **Custom CSS Widget** to deploy the changes. Full info on his shared node. 
@@ -16,6 +14,13 @@ https://chrome.google.com/webstore/detail/live-editor-for-css-less/ifhikkcafabcg
 
 The wonderful part about Jay's extension is that it works on mobile. You'll find a handful of separately organized mobile styles that take full advantage of this. ✨
 
+## Preview 👀
+
+Here's a preview of what the styles will change! 
+
+![styles_preview-v01-RDY](https://user-images.githubusercontent.com/127541578/224455895-5c658f3e-2bf6-4958-903b-cb4977713b90.jpg)
+
+ 
 ## Buy Me a Coffee ☕
 
 It was definitely a lot of work to dig up the classes, get thigs right, test, build variables, and add the comments in to make things easy to follow. If you like it, use it, or wanna fork it, please consider buying me a coffee! 🤗
