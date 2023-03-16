@@ -20,10 +20,13 @@ Here's a preview of what the styles will change!
 
 ![styleflowy_demo-v02-RDY](https://user-images.githubusercontent.com/127541578/224458714-fb6284f7-92d0-497b-8955-0a1b91296a4e.png)
 
+## Improvements 🚧
+
+I'll continue to update this repo as I make changes, and I invite other folks to improve on this if you want! Definitely let me know if you make any changes or add any new fun stuff! Happy playing! 
 
 ## Buy Me a Coffee ☕
 
-It was definitely a lot of work to dig up the classes, get thigs right, test, build variables, and add the comments in to make things easy to follow. If you like it, use it, or wanna fork it, please consider buying me a coffee! 🤗
+It was a lot of hours to dig up all these classes, get thigs right, test, build variables, and add the comments in to make things easy to follow. So if you like it, use it, or wanna fork it, please consider buying me a coffee! 🤗
 
 ### 👉 https://www.buymeacoffee.com/3w3e3EfJri — Thanks, I appreciate ya! 🙏
 
